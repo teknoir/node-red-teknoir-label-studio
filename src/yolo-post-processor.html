@@ -1,0 +1,62 @@
+<script type="text/javascript">
+    RED.nodes.registerType("yolo-post-processor",{
+        category: "label studio",
+        color: "#c28285",
+        defaults: {
+            name: {value: "Yolo Post Processor"},
+            imagePath: {value: "payload.event.image",required: true},
+            detectedObjectsPath: {value: "payload.event.objects",required: true},
+            modelPath: {value: "payload.event.model",required: true},
+            metadataPath: {value: "payload.event.metadata",required: false},
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "tn_dark.svg",
+        inputLabels: function(index) {
+            return "json containing either raw or prelabeled data";
+        },
+        outputLabels: function(index) {
+            return "gcs path";
+        },
+        label: function() {
+            return this.name||"YOLO Post Processor";
+        },
+        oneditprepare: function() {
+            var node=this;
+        },
+    });
+</script>
+
+<script type="text/html" data-template-name="yolo-post-processor">
+  <h4>Settings</h4>
+      <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i>Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+      <label for="node-input-imagePath"></i>image path</label>
+      <input type="text" id="node-input-imagePath" placeholder="image path">
+  </div>
+  <div class="form-row">
+      <label for="node-input-detectedObjectsPath"></i>objects path</label>
+      <input type="text" id="node-input-detectedObjectsPath" placeholder="objects path">
+  </div>
+  <div class="form-row">
+      <label for="node-input-modelPath"></i>model path</label>
+      <input type="text" id="node-input-modelPath" placeholder="model path">
+  </div>
+  <div class="form-row">
+    <label for="node-input-metadataPath"></i>metadata path</label>
+    <input type="text" id="node-input-metadataPath" placeholder="metadata path">
+</div>
+</script>
+
+<script type="text/html" data-help-name="yolo-post-processor">
+  <p>
+    <strong
+      >This node is adding post processing of data produced by YOLO
+      model</strong
+    ><br />
+  </p>
+  <p>Makes it compatible with Teknoir Label Studio Task.<br /></p>
+</script>

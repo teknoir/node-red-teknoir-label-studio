@@ -1,0 +1,122 @@
+<style>
+.lsf-label {
+    --color: #ccc;
+    --background: #e8e8e8;
+    align-items: center;
+    background-color: var(--background);
+    border-left: 4px solid var(--color);
+    border-radius: 3px;
+    color: #333;
+    display: inline-flex;
+    font-size: 14px;
+    font-weight: 400;
+    height: 26px;
+    line-height: 26px;
+    margin: 0 8px 8px 0;
+    padding: 0 8px;
+    position: relative;
+
+}
+.lsf-labels {
+    align-items: center;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: flex-start;
+    margin: 1em 0;
+}
+</style>
+<script type="text/javascript">
+    RED.nodes.registerType("ls-project-export-meta",{
+        category: "label studio",
+        color: "#c28285",
+        defaults: {
+            name: {value: "Export Project Info"},
+            selectedProjectId: {value: "",required: true},
+            selectedProject: {value: {},required: true},
+            lsProjects: {value: [],required: true},
+            labelType: {value: "",required: true},
+            projectLabels: {value: [],required: true},
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "tn_dark.svg",
+        inputLabels: function(index) {
+            return "json containing either raw or prelabeled data";
+        },
+        outputLabels: function(index) {
+            return "gcs path";
+        },
+        label: function() {
+            return this.name||"task-import";
+        },
+        oneditprepare: function() {
+            var node=this;
+
+            $("#node-input-selectedProjectId").change(function() {
+                const project=node.lsProjects.find(
+                    (x) => x.id===parseInt(this.value)
+                );
+                if(project) {
+                    parsedLabels=project.parsed_label_config;
+                    projectLabels=(parsedLabels.tag||parsedLabels.label).labels;
+                    labelType=(parsedLabels.tag||parsedLabels.label).type;
+                    inputs=(parsedLabels.tag||parsedLabels.label).inputs.map(
+                        (inp) => inp.value
+                    );
+                    $("#projectLabels").html(projectLabels.map(l => `<span class="lsf-label"><span>${l}</span></span>`));
+                    
+
+                    $("#labelType").text(labelType);
+                    $("#inputs").text(inputs);
+                    $("#node-input-publicData").prop('checked', node.publicData);
+
+                    node.labelType=labelType;
+                    node.projectLabels=projectLabels;
+                    node.selectedProject=project;
+                }
+            });
+            $.getJSON("label-studio/task/projects",function(projects) {
+                projects.forEach((project) => {
+                    $("#node-input-selectedProjectId").append(
+                        `<option value="${project.id}">${project.title}</option>`
+                    );
+                });
+                node.lsProjects=projects;
+                $("#node-input-selectedProjectId").val(node.selectedProjectId);
+                $("#node-input-selectedProjectId").trigger("change");
+            });
+        },
+    });
+</script>
+
+<script type="text/html" data-template-name="ls-project-export-meta">
+  <h4>Settings</h4>
+      <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i>name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+      <label for="node-input-selectedProjectId"></i>Project</label>
+      <select id="node-input-selectedProjectId">
+      </select>
+  </div>
+  <div class="project-labels">
+      <label for="projectLabels"></i>Labels</label>
+      <div id="projectLabels" class="lsf-labels"></div>
+  </div>
+</div>
+</script>
+
+<script type="text/html" data-help-name="ls-project-export-meta">
+  <p><strong>This node is calling fetching labelstudio project data</strong><br /></p>
+  <p>
+    The node will send label studio project properties downwards. 
+    Sent fields within project_info object:
+    <ul>
+        <li>labels - project labels arrays</li>
+        <li>namespace - organisation label studio belongs to</li>
+        <li>labelstudio_project - projects title</li>
+        <li>domain - domain where label studio is served</li>
+    </ul>
+  </p>
+</script>
