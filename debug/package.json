@@ -14,8 +14,7 @@
   },
   "dependencies": {
     "node-red": "^3.0.2",
-    "node-red-contrib-image-tools": "^2.0.4",
-    "node-red-teknoir-zapier": "file:../",
+    "node-red-teknoir-label-studio": "file:../",
     "nodemon": "^2.0.19"
   },
   "engines": {

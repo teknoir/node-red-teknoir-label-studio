@@ -28,7 +28,7 @@ module.exports = function (RED) {
     return { result: result, model_version: model };
   }
 
-  function YoloPostProcessor(config) {
+  function YoloTransformer(config) {
     let node = this;
     RED.nodes.createNode(this, config);
     node.on("input", function (msg, send, done) {
@@ -71,5 +71,5 @@ module.exports = function (RED) {
     });
   }
 
-  RED.nodes.registerType("yolo-post-processor", YoloPostProcessor);
+  RED.nodes.registerType("yolo-transformer", YoloTransformer);
 };

@@ -26,16 +26,18 @@
 }
 </style>
 <script type="text/javascript">
-    RED.nodes.registerType("ls-project-export-meta",{
+    RED.nodes.registerType("import",{
         category: "label studio",
         color: "#c28285",
         defaults: {
-            name: {value: "Export Project Info"},
+            name: {value: "import"},
             selectedProjectId: {value: "",required: true},
             selectedProject: {value: {},required: true},
             lsProjects: {value: [],required: true},
             labelType: {value: "",required: true},
             projectLabels: {value: [],required: true},
+            predictionsTreshold: {value: 0.3, validate: RED.validators.number()},
+            publicData: {value: false},
         },
         inputs: 1,
         outputs: 1,
@@ -47,7 +49,7 @@
             return "gcs path";
         },
         label: function() {
-            return this.name||"task-import";
+            return this.name||"import";
         },
         oneditprepare: function() {
             var node=this;
@@ -89,7 +91,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="ls-project-export-meta">
+<script type="text/html" data-template-name="import">
   <h4>Settings</h4>
       <div class="form-row">
       <label for="node-input-name"><i class="icon-tag"></i>name</label>
@@ -100,6 +102,14 @@
       <select id="node-input-selectedProjectId">
       </select>
   </div>
+  <div class="form-row">
+    <label for="node-input-predictionsTreshold">Prediction treshold</label>
+    <input type="text" id="node-input-predictionsTreshold" placeholder="passes only predictions lower than value">
+</div>
+  <div class="form-row">
+    <input type="checkbox" id="node-input-publicData" style="display: inline-block; width: auto; vertical-align: top;">
+    <label for="node-input-publicData" style="width: auto">Make uploaded files public</label>
+</div>
   <div class="project-labels">
       <label for="projectLabels"></i>Labels</label>
       <div id="projectLabels" class="lsf-labels"></div>
@@ -107,16 +117,20 @@
 </div>
 </script>
 
-<script type="text/html" data-help-name="ls-project-export-meta">
-  <p><strong>This node is calling fetching labelstudio project data</strong><br /></p>
+<script type="text/html" data-help-name="import">
+  <p><strong>This node adds tasks to a Label Studio project</strong><br/></p>
   <p>
-    The node will send label studio project properties downwards. 
-    Sent fields within project_info object:
+    The node will send contents to default gcs bucket and will import task into Label Studio. 
+    Required fields:
     <ul>
-        <li>labels - project labels arrays</li>
-        <li>namespace - organisation label studio belongs to</li>
-        <li>labelstudio_project - projects title</li>
-        <li>domain - domain where label studio is served</li>
+        <li>content - bytes array, file contents</li>
+        <li>type - file extension</li>
+        <li>predictions - array of predictions</li>
+    </ul>
+    <br/>
+    Optional fields:
+    <ul>
+        <li>metadata - object</li>
     </ul>
   </p>
 </script>

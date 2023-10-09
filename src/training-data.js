@@ -7,7 +7,7 @@ const utils = require("./utils");
 
 module.exports = async function (RED) {
   const teknoir_config = await utils.config();
-  const ls = utils.ls(teknoir_config.LS_HOST, teknoir_config.OWNER);
+  const ls = utils.ls(teknoir_config.LS_HOST, teknoir_config.HTTP_VERIFIED_JWT);
   const storage = new Storage({});
   
   function LabelStudioTask(config) {
@@ -98,7 +98,7 @@ module.exports = async function (RED) {
     });
   }
 
-  RED.nodes.registerType("task-source", LabelStudioTask);
+  RED.nodes.registerType("training-data", LabelStudioTask);
 
   RED.httpAdmin.get("/label-studio/projects", function (req, res) {
     ls.getProjects().then((x) => res.json(x));

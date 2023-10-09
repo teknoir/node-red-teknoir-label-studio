@@ -1,6 +1,6 @@
 {
   "name": "node-red-teknoir-label-studio",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A set of nodes to connect Label Studio in interesting ways",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,10 +16,9 @@
   ],
   "node-red": {
     "nodes": {
-      "teknoir-task-source": "src/label-studio-task-source.js",
-      "teknoir-yolo-post-processor": "src/yolo-post-processor.js",
-      "teknoir-task-import": "src/label-studio-import-task.js",
-      "teknoir-export-meta": "src/label-studio-export-meta.js"
+      "yolo-transformer": "src/yolo-transformer.js",
+      "import": "src/import.js",
+      "tproject": "src/project.js"
     }
   },
   "author": "Anders Åslund <anders.aslund@teknoir.ai>",
