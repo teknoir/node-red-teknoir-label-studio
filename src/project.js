@@ -32,13 +32,18 @@ module.exports = async function (RED) {
         });
        
         node.status({ fill: "green", shape: "dot", text: "done" });
+      }).catch((e) => {
+        node.error(e);
+        node.status({ fill: "red", shape: "dot", text: e });
       });
     });
   }
 
   RED.nodes.registerType("project", LabelStudioProject);
 
-  RED.httpAdmin.get("/label-studio/task/projects", function (req, res) {
-    ls.getProjects().then((x) => res.json(x));
+  RED.httpAdmin.get("/label-studio/projects", function (req, res) {
+    ls.getProjects().then((r) => res.json(r)).catch((e) => {
+      res.json({error: e.toString()})
+    });
   });
 };

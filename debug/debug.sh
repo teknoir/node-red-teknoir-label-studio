@@ -10,7 +10,6 @@ trap "exit" INT TERM ERR
 trap "kill 0" EXIT
 
 kubectl --context ${CONTEXT} -n ${NAMESPACE} port-forward svc/label-studio 8086:80 &
-kubectl --context ${CONTEXT} -n teknoir port-forward svc/profiles-kfam 8087:8081 &
 
 sleep 5
 

@@ -45,6 +45,10 @@
                 }
             });
             $.getJSON("label-studio/projects",function(projects) {
+                if (projects.hasOwnProperty('error') && projects.error) {
+                    console.error("error fetching projects", projects.error);
+                    return;
+                }
                 projects.forEach((project) => {
                     $("#node-input-selectedProjectId").append(
                         `<option value="${project.id}">${project.title}</option>`

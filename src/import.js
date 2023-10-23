@@ -131,8 +131,4 @@ module.exports = async function (RED) {
   }
 
   RED.nodes.registerType("import", LabelStudioImport);
-
-  RED.httpAdmin.get("/label-studio/task/projects", function (req, res) {
-    ls.getProjects().then((x) => res.json(x));
-  });
 };

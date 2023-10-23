@@ -99,8 +99,4 @@ module.exports = async function (RED) {
   }
 
   RED.nodes.registerType("training-data", LabelStudioTask);
-
-  RED.httpAdmin.get("/label-studio/projects", function (req, res) {
-    ls.getProjects().then((x) => res.json(x));
-  });
 };
