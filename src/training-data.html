@@ -1,9 +1,9 @@
 <script type="text/javascript">
-    RED.nodes.registerType("task-source",{
+    RED.nodes.registerType("training-data",{
         category: "label studio",
         color: "#c28285",
         defaults: {
-            name: {value: "Label Studio Task Source"},
+            name: {value: "training data"},
             selectedProjectId: {value: "",required: true},
             selectedProject: {value: {},required: true},
             lsProjects: {value: [],required: true},
@@ -20,7 +20,7 @@
             return "gcs path";
         },
         label: function() {
-            return this.name||"task-source";
+            return this.name||"training data";
         },
         oneditprepare: function() {
             var node=this;
@@ -58,7 +58,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="task-source">
+<script type="text/html" data-template-name="training-data">
   <h4>Settings</h4>
       <div class="form-row">
       <label for="node-input-name"><i class="icon-tag"></i>name</label>
@@ -83,7 +83,7 @@
   </div>
 </script>
 
-<script type="text/html" data-help-name="task-source">
+<script type="text/html" data-help-name="training-data">
   <p><strong>This node is distributing tasks based on project source settings</strong><br /></p>
   <p>
     The node will send to default gcs bucket and determine proper folder based

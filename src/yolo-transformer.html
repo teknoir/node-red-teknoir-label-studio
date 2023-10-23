@@ -1,9 +1,9 @@
 <script type="text/javascript">
-    RED.nodes.registerType("yolo-post-processor",{
+    RED.nodes.registerType("yolo-transformer",{
         category: "label studio",
         color: "#c28285",
         defaults: {
-            name: {value: "Yolo Post Processor"},
+            name: {value: "yolo transformer"},
             imagePath: {value: "payload.event.image",required: true},
             detectedObjectsPath: {value: "payload.event.objects",required: true},
             modelPath: {value: "payload.event.model",required: true},
@@ -19,7 +19,7 @@
             return "gcs path";
         },
         label: function() {
-            return this.name||"YOLO Post Processor";
+            return this.name||"yolo transformer";
         },
         oneditprepare: function() {
             var node=this;
@@ -27,7 +27,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="yolo-post-processor">
+<script type="text/html" data-template-name="yolo-transformer">
   <h4>Settings</h4>
       <div class="form-row">
       <label for="node-input-name"><i class="icon-tag"></i>Name</label>
@@ -51,12 +51,9 @@
 </div>
 </script>
 
-<script type="text/html" data-help-name="yolo-post-processor">
+<script type="text/html" data-help-name="yolo-transformer">
   <p>
-    <strong
-      >This node is adding post processing of data produced by YOLO
-      model</strong
-    ><br />
+    <strong>This node transforms incoming YOLO format detections into Label-Studio tasks.</strong><br />
   </p>
-  <p>Makes it compatible with Teknoir Label Studio Task.<br /></p>
+  <p>Makes YOLO detections compatible with Teknoir Label-Studio tasks.<br /></p>
 </script>

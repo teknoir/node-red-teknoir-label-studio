@@ -7,7 +7,7 @@ const utils = require("./utils");
 
 module.exports = async function (RED) {
   const teknoir_config = await utils.config();
-  const ls = utils.ls(teknoir_config.LS_HOST, teknoir_config.OWNER);
+  const ls = utils.ls(teknoir_config.LS_HOST, teknoir_config.HTTP_VERIFIED_JWT);
   const storage = new Storage({});
 
   const nodeImportingStatus = {
@@ -25,7 +25,7 @@ module.exports = async function (RED) {
     shape: "dot",
     text: "predictions didnt pass treshold",
   };
-  function LabelStudioImportTask(config) {
+  function LabelStudioImport(config) {
     var node = this;
     RED.nodes.createNode(this, config);
 
@@ -130,7 +130,7 @@ module.exports = async function (RED) {
     });
   }
 
-  RED.nodes.registerType("task-import", LabelStudioImportTask);
+  RED.nodes.registerType("import", LabelStudioImport);
 
   RED.httpAdmin.get("/label-studio/task/projects", function (req, res) {
     ls.getProjects().then((x) => res.json(x));
