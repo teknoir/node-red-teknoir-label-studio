@@ -1,6 +1,6 @@
 {
   "name": "node-red-teknoir-label-studio",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A set of nodes to connect Label Studio in interesting ways",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,9 +16,9 @@
   ],
   "node-red": {
     "nodes": {
-      "yolo-transformer": "src/yolo-transformer.js",
+      "collate": "src/collate.js",
       "import": "src/import.js",
-      "tproject": "src/project.js"
+      "export": "src/export.js"
     }
   },
   "author": "Anders Åslund <anders.aslund@teknoir.ai>",
@@ -27,10 +27,10 @@
   },
   "homepage": "https://teknoir.ai",
   "dependencies": {
-    "@google-cloud/storage": "5.8.5",
-    "async": "^3.2.0",
-    "node-fetch": "2.6.0",
-    "uuid": "8.3.2",
+    "@google-cloud/storage": "7.12.1",
+    "async": "3.2.6",
+    "node-fetch": "2.7.0",
+    "uuid": "9.0.1",
     "js-yaml": "4.1.0"
   }
 }

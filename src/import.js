@@ -1,40 +1,39 @@
-const { Storage } = require("@google-cloud/storage");
-const { v4 } = require("uuid");
-const fs = require("fs");
-const async = require("async");
-const fetch = require("node-fetch");
-const utils = require("./utils");
-
 module.exports = async function (RED) {
-  const teknoir_config = await utils.config();
-  const ls = utils.ls(teknoir_config.LS_HOST, teknoir_config.HTTP_VERIFIED_JWT);
-  const storage = new Storage({});
+  const { Storage } = require("@google-cloud/storage");
+  const { v4 } = require("uuid");
+  const async = require("async");
 
-  const nodeImportingStatus = {
-    fill: "yellow",
-    shape: "dot",
-    text: "importing",
-  };
-  const nodeSuccessImportStatus = {
-    fill: "green",
-    shape: "dot",
-    text: "task imported",
-  };
-  const nodePredictionTresholdNotPassedStatus = {
-    fill: "yellow",
-    shape: "dot",
-    text: "predictions didnt pass treshold",
-  };
-  function LabelStudioImport(config) {
+  function Import(config) {
+    const utils = require("./utils");
+    const teknoir_config = utils.config();
+    const storage = new Storage({});
+
+    const nodeImportingStatus = {
+      fill: "yellow",
+      shape: "dot",
+      text: "importing",
+    };
+    const nodeSuccessImportStatus = {
+      fill: "green",
+      shape: "dot",
+      text: "task imported",
+    };
+    const nodePredictionTresholdNotPassedStatus = {
+      fill: "yellow",
+      shape: "dot",
+      text: "predictions didnt pass treshold",
+    };
+
     var node = this;
     RED.nodes.createNode(this, config);
 
-    if (!teknoir_config.DOMAIN) {
-      node.error("A DOMAIN environment variable is required");
-      return;
-    }
-
     node.on("input", function (msg) {
+      if (!teknoir_config.DOMAIN) {
+        node.error("Environment variable DOMAIN is missing!");
+        return;
+      }
+      const ls = utils.ls(teknoir_config.LS_HOST, teknoir_config.HTTP_VERIFIED_JWT);
+
       if (!config.selectedProject) {
         const msg = "Must choose project before supplying input";
         node.error(msg);
@@ -63,30 +62,12 @@ module.exports = async function (RED) {
         return;
       }
 
-      if (
-        hasPredictions &&
-        config.predictionsTreshold &&
-        // not contains predictions that are lower than treshold
-        !payload.predictions.find((p) => {
-          return (
-            p.result.filter(
-              (obj) => obj.value.score < config.predictionsTreshold
-            ).length > 0
-          );
-        })
-      ) {
-        console.log("predictions didnt pass treshold");
-        node.status(nodePredictionTresholdNotPassedStatus);
-        return;
-      }
-
       const fileName = `label-studio/projects/${projectName}/import/${fileNamePrefix}`;
       const bucket = storage.bucket(bucketName); // Get access to the bucket
       const fullFilePath = `gs://${bucketName}/${fileName}.${fileExtension}`;
       const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}.${fileExtension}`;
       var contentFile = function uploadMainFile(callback) {
-        utils
-          .writeToGcs(
+        utils.writeToGcs(
             bucket,
             `${fileName}.${fileExtension}`,
             Buffer.from(msg.payload.content),
@@ -122,7 +103,6 @@ module.exports = async function (RED) {
         if (err) {
           node.error(err);
         } else {
-          console.log(res);
           node.send({ payload: res });
           node.status(nodeSuccessImportStatus);
         }
@@ -130,5 +110,5 @@ module.exports = async function (RED) {
     });
   }
 
-  RED.nodes.registerType("import", LabelStudioImport);
+  RED.nodes.registerType("import", Import);
 };

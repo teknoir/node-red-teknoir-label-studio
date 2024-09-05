@@ -3,23 +3,23 @@ module.exports = function (RED) {
     return path.split(".").reduce((o, i) => o[i], obj);
   }
 
-  function toPredictions(objects, model) {
+  function toLabelStudioPredictions(detections, model) {
     let result = [];
-    for (let i = 0; i < objects.length; i++) {
-      let object = objects[i];
+    for (let i = 0; i < detections.length; i++) {
+      let detection = detections[i]["detection"];
       let prediction = {
         from_name: "label",
         source: "$image",
         to_name: "image",
         type: "rectanglelabels",
         value: {
-          score: object.score,
-          rectanglelabels: [object.className],
+          score: detection.score,
+          rectanglelabels: [detection.label],
           rotation: 0,
-          x: object.bbox[0] * 100.0,
-          y: object.bbox[1] * 100.0,
-          width: object.bbox[2] * 100.0,
-          height: object.bbox[3] * 100.0,
+          x: detection.x1 * 100.0,
+          y: detection.y1 * 100.0,
+          width: detection.width * 100.0,
+          height: detection.height * 100.0,
         },
       };
       result.push(prediction);
@@ -28,7 +28,7 @@ module.exports = function (RED) {
     return { result: result, model_version: model };
   }
 
-  function YoloTransformer(config) {
+  function Collate(config) {
     let node = this;
     RED.nodes.createNode(this, config);
     node.on("input", function (msg, send, done) {
@@ -37,18 +37,34 @@ module.exports = function (RED) {
         shape: "dot",
         text: "converting",
       });
+
       try {
+        let kind = fieldByPath(config.kindPath, msg) || "";
+        if (kind !== "InferenceEvent") {
+            node.status({
+                fill: "red",
+                shape: "dot",
+                text: "kind not InferenceEvent, skipping!",
+            });
+            done();
+            return;
+        }
+
         let imageBase64 = fieldByPath(config.imagePath, msg).split(",")[1];
         let imageBuffer = Array.from(
           Uint8Array.from(Buffer.from(imageBase64, "base64"))
         );
 
-        let predictionObjects = fieldByPath(config.detectedObjectsPath, msg);
-        let metadata = fieldByPath(config.metadataPath, msg) || {};
-        let model = fieldByPath(config.modelPath, msg);
+        let detections = fieldByPath(config.detectionsPath, msg);
+        let metadata = {
+          lineage: fieldByPath(config.lineagePath, msg) || {},
+          location: fieldByPath(config.locationPath, msg) || {},
+          peripheral: fieldByPath(config.peripheralPath, msg) || {},
+        }
+        // let model = fieldByPath(config.modelPath, msg);
         let predictions = [];
-        if (predictionObjects && model) {
-          predictions.push(toPredictions(predictionObjects, model));
+        if (detections) {
+          predictions.push(toLabelStudioPredictions(detections, "tbd"));
         }
         var result = {
           payload: {
@@ -71,5 +87,5 @@ module.exports = function (RED) {
     });
   }
 
-  RED.nodes.registerType("yolo-transformer", YoloTransformer);
+  RED.nodes.registerType("collate", Collate);
 };

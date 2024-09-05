@@ -1,0 +1,39 @@
+<script type="text/javascript">
+    RED.nodes.registerType("collate", {
+        category: "label studio",
+        color: "#c28285",
+        defaults: {
+            name: {value: "collate"},
+            kindPath: {value: "payload.kind",required: false},
+            imagePath: {value: "payload.data.image",required: false},
+            detectionsPath: {value: "payload.data.detections",required: false},
+            lineagePath: {value: "payload.data.lineage",required: false},
+            locationPath: {value: "payload.data.location",required: false},
+            peripheralPath: {value: "payload.data.peripheral",required: false},
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "Teknoir_RGB_LogoMark_OffWht.svg",
+        label: function () {
+            return this.name || "collate";
+        },
+        oneditprepare: function () {
+            var node = this;
+        },
+    });
+</script>
+
+<script type="text/html" data-template-name="collate">
+    <h4>Settings</h4>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i>Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="collate">
+    <p>
+        <strong>This node transforms incoming InferenceEvents with detections into Label-Studio predictions.</strong><br/>
+    </p>
+    <p>Makes InferenceEvents compatible with Teknoir Label-Studio tasks.<br/></p>
+</script>

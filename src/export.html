@@ -26,11 +26,11 @@
 }
 </style>
 <script type="text/javascript">
-    RED.nodes.registerType("project",{
+    RED.nodes.registerType("export",{
         category: "label studio",
         color: "#c28285",
         defaults: {
-            name: {value: "project"},
+            name: {value: "export"},
             selectedProjectId: {value: "",required: true},
             selectedProject: {value: {},required: true},
             lsProjects: {value: [],required: true},
@@ -39,15 +39,9 @@
         },
         inputs: 1,
         outputs: 1,
-        icon: "tn_dark.svg",
-        inputLabels: function(index) {
-            return "json containing either raw or prelabeled data";
-        },
-        outputLabels: function(index) {
-            return "gcs path";
-        },
+        icon: "Teknoir_RGB_LogoMark_OffWht.svg",
         label: function() {
-            return this.name||"project";
+            return this.name||"export";
         },
         oneditprepare: function() {
             var node=this;
@@ -64,7 +58,7 @@
                         (inp) => inp.value
                     );
                     $("#projectLabels").html(projectLabels.map(l => `<span class="lsf-label"><span>${l}</span></span>`));
-                    
+
 
                     $("#labelType").text(labelType);
                     $("#inputs").text(inputs);
@@ -93,7 +87,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="project">
+<script type="text/html" data-template-name="export">
   <h4>Settings</h4>
       <div class="form-row">
       <label for="node-input-name"><i class="icon-tag"></i>name</label>
@@ -104,17 +98,17 @@
       <select id="node-input-selectedProjectId">
       </select>
   </div>
-  <div class="project-labels">
+  <div class="export-labels">
       <label for="projectLabels"></i>Labels</label>
       <div id="projectLabels" class="lsf-labels"></div>
   </div>
 </div>
 </script>
 
-<script type="text/html" data-help-name="project">
-  <p><strong>This node is calling fetching labelstudio project data</strong><br /></p>
+<script type="text/html" data-help-name="export">
+  <p><strong>This node is exporting LabelStudio project data</strong><br /></p>
   <p>
-    The node will send label studio project properties downwards. 
+    The node will send LabelStudio project properties downwards.
     Sent fields within project_info object:
     <ul>
         <li>labels - project labels arrays</li>
